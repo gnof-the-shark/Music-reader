@@ -64,6 +64,22 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.repeat-toggle {
+  margin: 0 0 0.6rem;
+  border: 1px solid #ff8c1a88;
+  border-radius: 999px;
+  background: linear-gradient(160deg, #3a1529, #40205f);
+  color: #ffe9cc;
+  padding: 0.35rem 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.repeat-toggle[aria-pressed="true"] {
+  border-color: #ffb347;
+  box-shadow: 0 0 14px #ff8c1a66;
+}
+
 audio {
   width: 100%;
   filter: sepia(22%) hue-rotate(-12deg) saturate(120%);
