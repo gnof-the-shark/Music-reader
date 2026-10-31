@@ -3,8 +3,8 @@
   "short_name": "Music Reader",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#101114",
-  "theme_color": "#101114",
+  "background_color": "#120914",
+  "theme_color": "#1a0b1f",
   "description": "Lecteur audio GitHub Pages pour les fichiers mp3, wav et flac du dossier musique.",
   "icons": [
     {
