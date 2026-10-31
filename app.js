@@ -1,7 +1,11 @@
 const AUDIO_EXTENSIONS = [".mp3", ".wav", ".flac"];
+const CACHE_NAME = "music-reader-v1";
 
 const statusElement = document.getElementById("status");
 const playlistElement = document.getElementById("playlist");
+const offlineDownloadButton = document.getElementById("offline-download");
+let availableFiles = [];
+let isOfflineCaching = false;
 
 function isAudioFile(fileName) {
   const lowerName = fileName.toLowerCase();
@@ -36,6 +40,53 @@ function setStatus(text) {
   statusElement.textContent = text;
 }
 
+function getLocalAudioPath(file) {
+  const encodedPath = file.path
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  return `./${encodedPath}`;
+}
+
+function updateOfflineButtonState() {
+  if (!offlineDownloadButton) {
+    return;
+  }
+
+  offlineDownloadButton.disabled = isOfflineCaching || availableFiles.length === 0;
+}
+
+async function cacheFilesForOffline() {
+  if (!("caches" in window)) {
+    setStatus("Le cache hors-ligne n'est pas pris en charge sur ce navigateur.");
+    return;
+  }
+
+  if (availableFiles.length === 0 || isOfflineCaching) {
+    return;
+  }
+
+  isOfflineCaching = true;
+  updateOfflineButtonState();
+  setStatus(`Téléchargement hors-ligne de ${availableFiles.length} piste(s) en cours…`);
+
+  try {
+    const cache = await caches.open(CACHE_NAME);
+
+    for (const file of availableFiles) {
+      await cache.add(getLocalAudioPath(file));
+    }
+
+    setStatus(`${availableFiles.length} piste(s) prête(s) pour lecture hors-ligne.`);
+  } catch (error) {
+    console.error(error);
+    setStatus("Échec du téléchargement hors-ligne. Vérifie ta connexion Wi-Fi et réessaie.");
+  } finally {
+    isOfflineCaching = false;
+    updateOfflineButtonState();
+  }
+}
+
 function createRepeatButton(player) {
   const button = document.createElement("button");
   button.type = "button";
@@ -65,7 +116,7 @@ function renderPlaylist(files) {
     title.textContent = file.name;
     player.controls = true;
     player.preload = "none";
-    player.src = file.download_url;
+    player.src = getLocalAudioPath(file);
 
     item.append(title, repeatButton, player);
     playlistElement.appendChild(item);
@@ -94,16 +145,28 @@ async function loadMusicFiles() {
     .sort((a, b) => a.name.localeCompare(b.name, "fr"));
 
   if (files.length === 0) {
+    availableFiles = [];
+    updateOfflineButtonState();
     setStatus("Aucun fichier audio trouvé dans le dossier musique/. ");
     return;
   }
 
+  availableFiles = files;
+  updateOfflineButtonState();
   renderPlaylist(files);
   setStatus(`${files.length} fichier(s) audio détecté(s).`);
 }
 
+if (offlineDownloadButton) {
+  offlineDownloadButton.addEventListener("click", () => {
+    cacheFilesForOffline();
+  });
+}
+
 loadMusicFiles().catch((error) => {
   console.error(error);
+  availableFiles = [];
+  updateOfflineButtonState();
   setStatus("Erreur pendant le chargement. Vérifie que le dossier musique/ existe et que le dépôt est public.");
 });
 
