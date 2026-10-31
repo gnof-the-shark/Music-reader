@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr" data-github-owner="gnof-the-shark" data-github-repo="Music-reader">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1a0b1f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Ruelle Hantee" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Ruelle Hantée - Trames sonores</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>🎃 Ruelle Hantée</h1>
+      <p class="tagline">Trames sonores de la ruelle des petits bonheurs</p>
+      <p>
+        Dépose tes fichiers <code>.mp3</code>, <code>.wav</code> et <code>.flac</code> dans le dossier
+        <code>musique/</code> du dépôt. Le grimoire audio les invoque automatiquement ici.
+      </p>
+      <p id="status" aria-live="polite">Chargement des trames sonores…</p>
+      <ul id="playlist"></ul>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

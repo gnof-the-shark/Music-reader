@@ -1,0 +1,77 @@
+:root {
+  color-scheme: dark;
+  font-family: "Trebuchet MS", "Segoe UI", Roboto, sans-serif;
+  background: #120914;
+  color: #ffe9cc;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 15% 20%, #ff7a00 0%, transparent 30%),
+    radial-gradient(circle at 85% 10%, #5a1e76 0%, transparent 38%),
+    radial-gradient(circle at 50% 100%, #3f1300 0%, transparent 45%),
+    #120914;
+}
+
+main {
+  width: min(720px, 100%);
+  background: linear-gradient(165deg, rgba(20, 7, 28, 0.92), rgba(45, 15, 8, 0.92));
+  border: 1px solid #ff8c1a66;
+  border-radius: 14px;
+  padding: 1.4rem;
+  box-shadow:
+    0 0 0 1px #5b256f33 inset,
+    0 0 36px #ff8c1a22;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  color: #ffae3a;
+  text-shadow: 0 0 18px #ff7a0060;
+}
+
+.tagline {
+  margin-top: 0;
+  color: #d8b5ff;
+  font-weight: 600;
+}
+
+#playlist {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 1rem;
+}
+
+#playlist li {
+  background: linear-gradient(160deg, #2b0f21, #291d39);
+  border: 1px solid #ff8c1a44;
+  border-radius: 10px;
+  padding: 0.9rem;
+  box-shadow: 0 0 18px #00000066;
+}
+
+#playlist h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+audio {
+  width: 100%;
+  filter: sepia(22%) hue-rotate(-12deg) saturate(120%);
+}
+
+code {
+  background: #311738;
+  border-radius: 4px;
+  padding: 0.15rem 0.35rem;
+  color: #ffbf66;
+}
