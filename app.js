@@ -21,6 +21,8 @@ function ensureOfflineDownloadButton() {
 const offlineDownloadButton = ensureOfflineDownloadButton();
 let availableFiles = [];
 let isOfflineCaching = false;
+let playlistPlayers = [];
+let currentTrackIndex = -1;
 
 function isAudioFile(fileName) {
   const lowerName = fileName.toLowerCase();
@@ -119,10 +121,134 @@ function createRepeatButton(player) {
   return button;
 }
 
+function normalizeTrackIndex(index) {
+  if (playlistPlayers.length === 0) {
+    return -1;
+  }
+
+  return ((index % playlistPlayers.length) + playlistPlayers.length) % playlistPlayers.length;
+}
+
+function updateMediaSessionState(index) {
+  if (!("mediaSession" in navigator)) {
+    return;
+  }
+
+  const mediaSession = navigator.mediaSession;
+  const safeIndex = normalizeTrackIndex(index);
+
+  if (safeIndex === -1) {
+    mediaSession.playbackState = "none";
+    return;
+  }
+
+  const player = playlistPlayers[safeIndex];
+  const file = availableFiles[safeIndex];
+
+  if ("MediaMetadata" in window && file) {
+    mediaSession.metadata = new MediaMetadata({
+      title: file.name,
+      artist: "Music-reader",
+      album: "Ruelle Hantée",
+    });
+  }
+
+  mediaSession.playbackState = player.paused ? "paused" : "playing";
+}
+
+function pauseOtherPlayers(activeIndex) {
+  playlistPlayers.forEach((player, index) => {
+    if (index !== activeIndex && !player.paused) {
+      player.pause();
+    }
+  });
+}
+
+function playTrackAt(index) {
+  const safeIndex = normalizeTrackIndex(index);
+  if (safeIndex === -1) {
+    return;
+  }
+
+  currentTrackIndex = safeIndex;
+  pauseOtherPlayers(safeIndex);
+  updateMediaSessionState(safeIndex);
+  const player = playlistPlayers[safeIndex];
+  const playPromise = player.play();
+
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch((error) => {
+      console.error("Impossible de lancer la lecture", error);
+    });
+  }
+}
+
+function playNextTrack() {
+  if (playlistPlayers.length === 0) {
+    return;
+  }
+
+  const startIndex = currentTrackIndex === -1 ? 0 : currentTrackIndex + 1;
+  playTrackAt(startIndex);
+}
+
+function playPreviousTrack() {
+  if (playlistPlayers.length === 0) {
+    return;
+  }
+
+  const startIndex = currentTrackIndex === -1 ? playlistPlayers.length - 1 : currentTrackIndex - 1;
+  playTrackAt(startIndex);
+}
+
+function setMediaSessionHandler(action, handler) {
+  if (!("mediaSession" in navigator)) {
+    return;
+  }
+
+  try {
+    navigator.mediaSession.setActionHandler(action, handler);
+  } catch (error) {
+    console.warn(`Action media session non prise en charge: ${action}`, error);
+  }
+}
+
+function setupMediaSessionControls() {
+  setMediaSessionHandler("nexttrack", () => {
+    playNextTrack();
+  });
+
+  setMediaSessionHandler("previoustrack", () => {
+    playPreviousTrack();
+  });
+
+  setMediaSessionHandler("play", () => {
+    if (currentTrackIndex === -1) {
+      playTrackAt(0);
+      return;
+    }
+
+    const player = playlistPlayers[currentTrackIndex];
+    player.play().catch((error) => {
+      console.error("Impossible de reprendre la lecture", error);
+    });
+  });
+
+  setMediaSessionHandler("pause", () => {
+    if (currentTrackIndex === -1) {
+      return;
+    }
+
+    playlistPlayers[currentTrackIndex].pause();
+  });
+}
+
 function renderPlaylist(files) {
   playlistElement.innerHTML = "";
+  playlistPlayers = [];
+  currentTrackIndex = -1;
 
-  for (const file of files) {
+  files.forEach((file, index) => {
     const item = document.createElement("li");
     const title = document.createElement("h2");
     const player = document.createElement("audio");
@@ -132,10 +258,23 @@ function renderPlaylist(files) {
     player.controls = true;
     player.preload = "none";
     player.src = getLocalAudioPath(file);
+    player.addEventListener("play", () => {
+      currentTrackIndex = index;
+      pauseOtherPlayers(index);
+      updateMediaSessionState(index);
+    });
+    player.addEventListener("pause", () => {
+      if (currentTrackIndex === index) {
+        updateMediaSessionState(index);
+      }
+    });
 
     item.append(title, repeatButton, player);
     playlistElement.appendChild(item);
-  }
+    playlistPlayers.push(player);
+  });
+
+  setupMediaSessionControls();
 }
 
 async function loadMusicFiles() {
