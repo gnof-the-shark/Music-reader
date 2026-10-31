@@ -36,6 +36,23 @@ function setStatus(text) {
   statusElement.textContent = text;
 }
 
+function createRepeatButton(player) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "repeat-toggle";
+  player.loop = true;
+  button.setAttribute("aria-pressed", "true");
+  button.textContent = "🔁 Relecture: activée";
+
+  button.addEventListener("click", () => {
+    player.loop = !player.loop;
+    button.setAttribute("aria-pressed", String(player.loop));
+    button.textContent = player.loop ? "🔁 Relecture: activée" : "🔁 Relecture: désactivée";
+  });
+
+  return button;
+}
+
 function renderPlaylist(files) {
   playlistElement.innerHTML = "";
 
@@ -43,13 +60,14 @@ function renderPlaylist(files) {
     const item = document.createElement("li");
     const title = document.createElement("h2");
     const player = document.createElement("audio");
+    const repeatButton = createRepeatButton(player);
 
     title.textContent = file.name;
     player.controls = true;
     player.preload = "none";
     player.src = file.download_url;
 
-    item.append(title, player);
+    item.append(title, repeatButton, player);
     playlistElement.appendChild(item);
   }
 }
