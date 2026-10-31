@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr" data-github-owner="gnof-the-shark" data-github-repo="Music-reader">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101114" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Music Reader" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Music Reader</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Music Reader</h1>
+      <p>
+        Ajoute tes fichiers <code>.mp3</code>, <code>.wav</code> et <code>.flac</code> dans le dossier
+        <code>musique/</code> du dépôt. Ils apparaîtront automatiquement ici.
+      </p>
+      <p id="status" aria-live="polite">Chargement des fichiers audio…</p>
+      <ul id="playlist"></ul>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
