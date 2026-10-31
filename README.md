@@ -9,3 +9,4 @@ Site GitHub Pages pour lire automatiquement les fichiers audio (`.mp3`, `.wav`, 
 3. Ouvrez la page du dépôt: le lecteur liste automatiquement les fichiers trouvés dans `/musique`.
 4. Cliquez sur **Télécharger pour lecture hors-ligne** quand vous avez du Wi-Fi pour mettre les pistes en cache.
 5. Sur iPhone (Safari), utilisez **Partager > Sur l'écran d'accueil** pour installer la PWA.
+6. Depuis l'écran verrouillé (iPhone/Apple Watch), utilisez **suivant/précédent** pour changer de piste; la navigation revient au début à la fin de la liste.
