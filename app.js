@@ -40,8 +40,9 @@ function createRepeatButton(player) {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "repeat-toggle";
-  button.setAttribute("aria-pressed", "false");
-  button.textContent = "🔁 Relecture: désactivée";
+  player.loop = true;
+  button.setAttribute("aria-pressed", "true");
+  button.textContent = "🔁 Relecture: activée";
 
   button.addEventListener("click", () => {
     player.loop = !player.loop;
