@@ -1,4 +1,4 @@
-const CACHE_NAME = "music-reader-v1";
+const APP_CACHE_NAME = "music-reader-app-v2";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -11,7 +11,7 @@ const APP_ASSETS = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_ASSETS)));
+  event.waitUntil(caches.open(APP_CACHE_NAME).then((cache) => cache.addAll(APP_ASSETS)));
   self.skipWaiting();
 });
 
@@ -19,7 +19,13 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key.startsWith("music-reader-app-") && key !== APP_CACHE_NAME)
+            .map((key) => caches.delete(key))
+        )
+      )
   );
   self.clients.claim();
 });
@@ -36,20 +42,16 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      return fetch(event.request).then((networkResponse) => {
+    fetch(event.request)
+      .then((networkResponse) => {
         const clonedResponse = networkResponse.clone();
 
-        caches.open(CACHE_NAME).then((cache) => {
+        caches.open(APP_CACHE_NAME).then((cache) => {
           cache.put(event.request, clonedResponse);
         });
 
         return networkResponse;
-      });
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });

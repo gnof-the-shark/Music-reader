@@ -1,9 +1,24 @@
 const AUDIO_EXTENSIONS = [".mp3", ".wav", ".flac"];
-const CACHE_NAME = "music-reader-v1";
+const AUDIO_CACHE_NAME = "music-reader-audio-v1";
 
 const statusElement = document.getElementById("status");
 const playlistElement = document.getElementById("playlist");
-const offlineDownloadButton = document.getElementById("offline-download");
+function ensureOfflineDownloadButton() {
+  const existingButton = document.getElementById("offline-download");
+  if (existingButton) {
+    return existingButton;
+  }
+
+  const fallbackButton = document.createElement("button");
+  fallbackButton.id = "offline-download";
+  fallbackButton.type = "button";
+  fallbackButton.disabled = true;
+  fallbackButton.textContent = "Télécharger pour lecture hors-ligne";
+  statusElement.insertAdjacentElement("afterend", fallbackButton);
+  return fallbackButton;
+}
+
+const offlineDownloadButton = ensureOfflineDownloadButton();
 let availableFiles = [];
 let isOfflineCaching = false;
 
@@ -71,7 +86,7 @@ async function cacheFilesForOffline() {
   setStatus(`Téléchargement hors-ligne de ${availableFiles.length} piste(s) en cours…`);
 
   try {
-    const cache = await caches.open(CACHE_NAME);
+    const cache = await caches.open(AUDIO_CACHE_NAME);
 
     for (const file of availableFiles) {
       await cache.add(getLocalAudioPath(file));
