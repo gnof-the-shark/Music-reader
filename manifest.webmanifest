@@ -8,14 +8,10 @@
   "description": "Lecteur audio GitHub Pages pour les fichiers mp3, wav et flac du dossier musique.",
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "https://img.magnific.com/vecteurs-libre/icone-legume-citrouille-vecteur-isole_24640-134408.jpg?semt=ais_hybrid&w=740&q=80",
+      "sizes": "740x740",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ]
 }
