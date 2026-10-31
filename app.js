@@ -17,11 +17,12 @@ function getRepositoryContext() {
     return { owner: configuredOwner, repo: configuredRepo };
   }
 
-  if (!window.location.hostname.endsWith("github.io")) {
+  const hostName = window.location.hostname.toLowerCase();
+  if (!hostName.endsWith(".github.io")) {
     return null;
   }
 
-  const owner = window.location.hostname.split(".")[0];
+  const owner = hostName.split(".")[0];
   const repo = window.location.pathname.split("/").filter(Boolean)[0];
 
   if (!owner || !repo) {
