@@ -50,6 +50,21 @@ h1 {
   gap: 1rem;
 }
 
+#offline-download {
+  border: 1px solid #ff8c1a88;
+  border-radius: 999px;
+  background: linear-gradient(160deg, #3a1529, #40205f);
+  color: #ffe9cc;
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+#offline-download:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 #playlist li {
   background: linear-gradient(160deg, #2b0f21, #291d39);
   border: 1px solid #ff8c1a44;
